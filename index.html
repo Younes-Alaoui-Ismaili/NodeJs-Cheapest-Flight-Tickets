@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FlyTicket</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon-16x16.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="search.js"></script>
+    <link rel = "stylesheet" type = "text/css" href="fly.css"/>
+</head>
+
+<body>
+
+    <div class="header">
+            <center id="container" class="title"><h2 class="banner">Flight   Ticket   Search</h2></center>
+            <!-- <center><h4>AngularJS + Node + MongoDB</h4></center> -->
+            <!-- main UI code -->
+            <div id="container" ng-app="myApp" ng-controller="formCtrl">
+                    <form>
+                        Depart From:
+                        <select id="dep" ng-model="departFrom" style="width: 220px; height: 35px">
+                            <option id="1"  ng-repeat="x in city" value="{{x.name}}">{{x.name}}</option>
+                        </select>
+                        Your Destination:
+                        <select id="des" ng-model="yourDestination" style="width: 220px; height: 35px">
+                            <option ng-repeat="x in city" value="{{x.name}}">{{x.name}}</option>
+                        </select>
+                        Depart Date:
+                        <input id="dedate" type="date" placeholder="MM/DD/YY" ng-model="user.departDate">
+                        Return Date:
+                        <input id="redate" type="date" placeholder="MM/DD/YY" ng-model="user.returnDate">
+    
+                        <button id="btnSearch" class="btn btn-dark" type="button" onclick="func()">Search</button>
+                        <span id="status"></span>
+                    </form>
+                    <progress id="progressBar" value="0" max="100" style="width: 100%; height: 5px; color: white;">
+                    </progress>
+                </div>
+    </div>
+    <div class="topnav"></div>
+    <div class="main-body">
+        <div class="main-column">
+            <table id="mytable">
+                    <tr>
+                        <th>Carrier Name</th><th>Depart Code</th><th>Leaving Time</th><th>yourDestination Code</th><th>Arriving Time</th><th>Price</th>
+                    </tr>
+            </table>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="topnav"></div>
+        <p>© Copyright 2019-2020 World-IT.com. All rights reserved</p>
+    </footer>
+
+    <script>
+            var app = angular.module('myApp', []);
+            app.controller('formCtrl', function($scope) {
+                $scope.city =[
+                    {name: "Atlanta, GA-ATL"},
+                    {name: "Amsterdam, NL-AMS"},
+                    {name: "Abu Dhabi, AE-AUH"},
+                    {name: "Auckland, NZ-AKL"},
+                    {name: "Beijing, CN-BJS"},
+                    {name: "Bangkok, TH-BKK"},
+                    {name: "Barcelona, ES-BCN"},
+                    {name: "Berlin, DE-BER"},
+                    {name: "Boston, MA-BOS"},
+                    {name: "Brussels, BE-BRU"},
+                    {name: "Bogota, CO-BOG"},
+                    {name: "Brisbane, AU-BNE"},
+                    {name: "Buenos Aires, AR-BUE"},
+                    {name: "Bangalore, IN-BLR"},
+                    {name: "Chicago, IL-CHI"},
+                    {name: "Charlotte, NC-CLT"},
+                    {name: "Chengdu, CN-CTU"},
+                    {name: "Copenhagen, DK-CPH"},
+                    {name: "Chongqing, CN-CKG"},
+                    {name: "Cairo, EG-CAI"},
+                    {name: "Dubai, AE-DXB"},
+                    {name: "Dallas, TX-DFW"},
+                    {name: "Delhi, IN-DEL"},
+                    {name: "Doha, QA-DOH"},
+                    {name: "Denver, CO-DEN"},
+                    {name: "Detroit, MI-DTT"},
+                    {name: "Dublin, IE-DUB"},
+                    {name: "Düsseldorf, DE-DUS"},
+                    {name: "Edinburgh, GB-EDI"},
+                    {name: "Edmonton, AB-YEA"},
+                    {name: "Frankfurt, DE-FRA"},
+                    {name: "Fukuoka, JP-FUK"},
+                    {name: "Fort Lauderdale, FL-FLL"},
+                    {name: "Guangzhou, CN-CAN"},
+                    {name: "Geneva, CH-GVA"},
+                    {name: "Hong Kong, HK-HKG"},
+                    {name: "Houston, TX-HOU"},
+                    {name: "Ho Chi Minh City, VN-SGN"},
+                    {name: "Hangzhou, CN-HGH"},
+                    {name: "Hanoi, VN-HAN"},
+                    {name: "Honolulu, HI-HNL"},
+                    {name: "Helsinki, FI-HEL"},
+                    {name: "Istanbul, TR-IST"},
+                    {name: "Jakarta, ID-JKT"},
+                    {name: "Jeddah, SA-JED"},
+                    {name: "Johannesburg, ZA-JNB"},
+                    {name: "Kuala Lumpur, MY-KUL"},
+                    {name: "Kunming, CN-KMG"},
+                    {name: "London, GB-GON"},
+                    {name: "Los Angeles, CA-LAX"},
+                    {name: "Las Vegas, NV-LAS"},
+                    {name: "Lisbon, PT-LIS"},
+                    {name: "Lima, PE-LIM"},
+                    {name: "Moscow, RU-MOW"},
+                    {name: "Madrid, ES-MAD"},
+                    {name: "Munich, DE-MUC"},
+                    {name: "Mumbai, IN-BOM"},
+                    {name: "Mexico City, MX-MEX"},
+                    {name: "Manila, PH-MNL"},
+                    {name: "Milan, IT-MIL"},
+                    {name: "Miami, FL-MIA"},
+                    {name: "Melbourne, AU-MEL"},
+                    {name: "Minneapolis, MN-MSP"},
+                    {name: "Montreal, QC-YMQ"},
+                    {name: "New York, NY-NYC"},
+                    {name: "Newark, NJ-EWR"},
+                    {name: "Nanjing, CN-NKG"},
+                    {name: "Osaka, JP-OSA"},
+                    {name: "Oslo, NO-OSL"},
+                    {name: "Orlando, FL-ORL"},
+                    {name: "Okinawa, JP-OKA"},
+                    {name: "Paris, FR-PAR"},
+                    {name: "Philadelphia, PA-PHL"},
+                    {name: "Phoenix, AZ-PHX"},
+                    {name: "Palma, ES-PMI"},
+                    {name: "Qingdao, CN-TAO"},
+                    {name: "Quito, EC-UIO"},
+                    {name: "Quanzhou, CN-JJN"},
+                    {name: "Queenstown, NZ-ZQN"},
+                    {name: "Rome, IT-ROM"},
+                    {name: "Rio de Janeiro, BR-RIO"},
+                    {name: "Riyadh, SA-RUH"},
+                    {name: "Raleigh, NC-RDU"},
+                    {name: "Shanghai, CN-SHA"},
+                    {name: "Sao Paulo, BR-SAO"},
+                    {name: "Singapore, SG-SIN"},
+                    {name: "San Francisco, CA-SFO"},
+                    {name: "Sydney, AU-SYD"},
+                    {name: "Seattle, WA-SEA"},
+                    {name: "Shenzhen, CN-SZX"},
+                    {name: "Stockholm, SE-STO"},
+                    {name: "Surabaya, ID-SUB"},
+                    {name: "Tokyo, JP-TYO"},
+                    {name: "Toronto, ON-YTO"},
+                    {name: "Taipei, TW-TPE"},
+                    {name: "Urumqi, CN-URC"},
+                    {name: "Udon Thani, TH-UTH"},
+                    {name: "Ufa, RU-UFA"},
+                    {name: "Ube, JP-UBJ"},
+                    {name: "Uberlandia, BR-UDI"},
+                    {name: "Udaipur, IN-UDR"},
+                    {name: "Vienna, AT-VIE"},
+                    {name: "Vancouver, BC-YVR"},
+                    {name: "Venice, IT-VCE"},
+                    {name: "Vladivostok, RU-VVO"},
+                    {name: "Vladikavkaz, RU-OGZ"},
+                    {name: "Washington, DC-WAS"},
+                    {name: "Wuhan, CN-WUH"},
+                    {name: "Warsaw, PL-WAW"},
+                    {name: "Xi'an, CN-SIA"},
+                    {name: "Xiamen, CN-XMN"},
+                    {name: "Xining, CN-XNN"},
+                    {name: "Xuzhou, CN-XUZ"},
+                    {name: "Yogyakarta, ID-JOG"},
+                    {name: "Yangon, MM-RGN"},
+                    {name: "Yinchuan, CN-INC"},
+                    {name: "Yantai, CN-YNT"},
+                    {name: "Yuzhno-Sakhalinsk, RU-UUS"},
+                    {name: "Zurich, CH-ZRH"},
+                    {name: "Zhengzhou, CN-CGO"},
+                    {name: "Zhuhai, CN-ZUH"},
+                    {name: "Zagreb, HR-ZAG"}
+                ];
+            });
+        </script>
+</body>
+</html>
