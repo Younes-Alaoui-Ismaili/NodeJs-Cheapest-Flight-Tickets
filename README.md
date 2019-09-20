@@ -1,2 +1,2 @@
 # Flight search tickets
-This is a MongoDB-NodeJS-Angular application that display the flight tickets prices.
+This is a MongoDB-NodeJS-Angular application uses webscraping to display the best flight ticket to organize your trip.
